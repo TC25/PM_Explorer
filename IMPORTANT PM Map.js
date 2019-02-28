@@ -1,3 +1,15 @@
+//######################################################################################################## 
+//#                                                                                                    #\\
+//#                               PM_2.5_Explorer: A visualization web app                             #\\
+//#                                                                                                    #\\
+//########################################################################################################
+
+
+// date: 2019-2-15
+// authors: TC Chakraborty | tc.chakraborty@yale.edu
+// website: https://tirthankarchakraborty.users.earthengine.app/view/pmexplorer
+
+
 // Create default map for the app
 var map = ui.Map()
 // Set visibility options to remove geometry creator and layer list
@@ -75,7 +87,7 @@ var PM2016 = PM.select(['Y2016'],['PM']).set( 'system:time_start','2016','system
 //Create  Image collection of annual means
 var PMtime=ee.ImageCollection([PM1998,PM1999,PM2000,PM2001,PM2002,PM2003,PM2004,PM2005,
 PM2006,PM2007,PM2008,PM2009,PM2010,PM2011,PM2012,PM2013,PM2014,PM2015,PM2016]);
-
+// Multi-iyear mean
 var PMtime_mean=PMtime.mean();
 
 
@@ -137,19 +149,6 @@ panel.add(intro);
 }
 
 
-// //Function to create reference
-// function referencecreate(){
-//   var reference = ui.Panel([//ui.Label({value: 'Reference:'
-// //,style: {fontSize: '8px', fontWeight: 'bold'}
-//   //}), 
-//   ui.Label({value: '1. Chakraborty, T., & Lee, X. (2018). A simplified urban-extent algorithm to characterize surface urban heat islands on a global scale and examine vegetation control on their spatiotemporal variability. International Journal of Applied Earth Observation and Geoinformation.'
-// ,style: {fontSize: '10px', fontWeight: 'normal'}
-// })
-// ]);
-
-// // Add reference to the panel
-// panel.add(reference);
-//}
 
 // Create an inspector panel with a horizontal layout.
 var inspector = ui.Panel({
@@ -183,7 +182,7 @@ panel.clear()
 // Call the panel creation function again
 panelcreate()
 
-// Create panels to hold lon/lat and UHI values.
+// Create panels to hold lon/lat and PM values.
 var lat = ui.Label();
 var lon = ui.Label();
 var Pixel=ui.Label();
@@ -201,7 +200,7 @@ panel.add(ui.Panel([Mean], ui.Panel.Layout.flow('horizontal')))
   inspector.clear()
   inspector.style().set('shown', true);
    inspector.add(ui.Label({value:'Loading...', style: {color: 'gray',fontSize: '1.7vmin', fontWeight: 'normal', textAlign: 'center', margin: '0px 0px 0px 0px'}}));
-//Calculate the UHI values at the points from the images
+//Calculate the PM values at the points from the images
   var sample = ee.Image(PMtime_final).unmask(0).sample(point, 30).first().toDictionary();
   sample.evaluate(function(values) {
 
@@ -276,8 +275,7 @@ legend.add(ui.Label({
 // Define some constants.
 var PM_1km = 'Annual';
 var none= "Remove layers"
-/*Add UHI layers to map to display the 16-year daytime and nightime urban heat islands of the world's 4999 largest cities*/
-//Map.addLayer(DayUHI, {min:-1, max: 5, palette:colors ,opacity:1} , 'Daytime UHI' )
+/*Add PM layers to map to display the 16-year daytime and nightime urban heat islands of the world's 4999 largest cities*/
 var PMVis = PMtime_mean.clip(urb).select('PM').visualize({min:5, max:95,palette:colors ,opacity:1})
 // Create a layer selector that dictates which layer is visible on the map.
 var select = ui.Select({
